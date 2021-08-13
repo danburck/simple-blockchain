@@ -45,7 +45,18 @@ class Block {
         return hash.digest('hex');
     }
 }
+// Linked list of Blocks
 class Chain {
+    constructor() {
+        this.chain = [new Block(null, new Transaction(100, 'genesis', 'danburck'))];
+    }
+    get lastBlock() {
+        return this.chain[this.chain.length - 1];
+    }
+    addBlock(transaction, senderPublicKey, signature) {
+        const newBlock = new Block;
+    }
 }
+Chain.instance = new Chain();
 class Wallet {
 }

@@ -27,11 +27,25 @@ class Block {
     hash.update(str).end();
     return hash.digest('hex');
   }
-
 }
 
-
+// Linked list of Blocks
 class Chain {
+  public static instance = new Chain();
+
+  chain: Block[];
+
+  constructor() {
+    this.chain = [new Block(null, new Transaction(100, 'genesis', 'danburck'))];
+  }
+
+  get lastBlock() {
+    return this.chain[this.chain.length - 1];
+  }
+
+  addBlock(transaction: Transaction, senderPublicKey: string, signature: string) {
+    const newBlock = new Block
+  }
 
 }
 
