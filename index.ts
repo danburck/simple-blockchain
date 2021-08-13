@@ -13,9 +13,23 @@ class Transaction {
   }
 }
 
+// Container for multiple Transactions, with link to previous block
 class Block {
+  constructor(
+    public prevHash: string,
+    public transaction: Transaction,
+    public ts = Date.now()
+  ) {}
+
+  get hash() {
+    const str = JSON.stringify(this);
+    const hash = crypto.createHash('SH256');
+    hash.update(str).end();
+    return hash.digest('hex');
+  }
 
 }
+
 
 class Chain {
 
