@@ -74,12 +74,13 @@ class Chain {
 
     if (isValid) {
       const newBlock = new Block(this.lastBlock.hash, transaction);
+      this.mine(newBlock.nonce);
       this.chain.push(newBlock);
     }
   }
 }
 
-// Wrapper of public and private key to securely send coins back and forth
+// Wallet gives a user a public/private keypair
 class Wallet {
   public publicKey: string;
   public privateKey: string;

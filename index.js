@@ -76,12 +76,13 @@ class Chain {
         const isValid = verifier.verify(senderPublicKey, signature);
         if (isValid) {
             const newBlock = new Block(this.lastBlock.hash, transaction);
+            this.mine(newBlock.nonce);
             this.chain.push(newBlock);
         }
     }
 }
 Chain.instance = new Chain();
-// Wrapper of public and private key to securely send coins back and forth
+// Wallet gives a user a public/private keypair
 class Wallet {
     constructor() {
         const keypair = crypto.generateKeyPairSync('rsa', {
