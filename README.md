@@ -1,6 +1,6 @@
 # Simple Blockchain
 
-`simple blockchain` is a basic blockchain implementation from scratch, built with Node.js and Typescript.
+`simple blockchain` is a basic blockchain implementation from scratch, built with Node.js and Typescript to learn the basics of blockchain.
 
 ## Usage
 
