@@ -20,7 +20,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const crypto = __importStar(require("crypto"));
-// Transfer funds from one user to another user in one tranaction
+// Transfer funds between two wallets
 class Transaction {
     constructor(amount, payer, payee) {
         this.amount = amount;
@@ -31,7 +31,7 @@ class Transaction {
         return JSON.stringify(this);
     }
 }
-// Container for multiple Transactions, with link to previous block
+// Individual Block on the Chain, holding multiple Transactions
 class Block {
     constructor(prevHash, transaction, ts = Date.now()) {
         this.prevHash = prevHash;
@@ -41,12 +41,12 @@ class Block {
     }
     get hash() {
         const str = JSON.stringify(this);
-        const hash = crypto.createHash('SH256');
+        const hash = crypto.createHash('SHA256');
         hash.update(str).end();
         return hash.digest('hex');
     }
 }
-// Linked list of Blocks
+// The blockchain
 class Chain {
     constructor() {
         this.chain = [new Block(null, new Transaction(100, 'genesis', 'danburck'))];
@@ -54,6 +54,7 @@ class Chain {
     get lastBlock() {
         return this.chain[this.chain.length - 1];
     }
+    // Proof of Work system
     mine(nonce) {
         let solution = 1;
         console.log('⛏ mining...');
@@ -68,6 +69,7 @@ class Chain {
             solution += 1;
         }
     }
+    // Add a new block to the chain if valid signature & proof of work is complete
     addBlock(transaction, senderPublicKey, signature) {
         const verifier = crypto.createVerify('SHA256');
         verifier.update(transaction.toString());
@@ -98,3 +100,11 @@ class Wallet {
         Chain.instance.addBlock(transaction, this.publicKey, signature);
     }
 }
+// Example usage
+const danburck = new Wallet();
+const jordan = new Wallet();
+const euge = new Wallet();
+danburck.sendMoney(50, jordan.publicKey);
+jordan.sendMoney(10, euge.publicKey);
+euge.sendMoney(10, danburck.publicKey);
+console.log(Chain.instance);

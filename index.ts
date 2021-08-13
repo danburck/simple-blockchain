@@ -1,6 +1,6 @@
 import * as crypto from 'crypto';
 
-// Transfer funds from one user to another user in one tranaction
+// Transfer funds between two wallets
 class Transaction {
   constructor(
     public amount: number,
@@ -13,26 +13,25 @@ class Transaction {
   }
 }
 
-// Container for multiple Transactions, with link to previous block
+// Individual Block on the Chain, holding multiple Transactions
 class Block {
-
   public nonce = Math.round(Math.random() * 999999999);
 
   constructor(
-    public prevHash: string,
+    public prevHash: string | null,
     public transaction: Transaction,
     public ts = Date.now()
   ) {}
 
   get hash() {
     const str = JSON.stringify(this);
-    const hash = crypto.createHash('SH256');
+    const hash = crypto.createHash('SHA256');
     hash.update(str).end();
     return hash.digest('hex');
   }
 }
 
-// Linked list of Blocks
+// The blockchain
 class Chain {
   public static instance = new Chain();
 
@@ -46,6 +45,7 @@ class Chain {
     return this.chain[this.chain.length - 1];
   }
 
+  // Proof of Work system
   mine(nonce: number) {
     let solution = 1;
     console.log('⛏ mining...')
@@ -65,7 +65,8 @@ class Chain {
     }
   }
 
-  addBlock(transaction: Transaction, senderPublicKey: string, signature: string) {
+  // Add a new block to the chain if valid signature & proof of work is complete
+  addBlock(transaction: Transaction, senderPublicKey: string, signature: Buffer) {
     const verifier = crypto.createVerify('SHA256');
     verifier.update(transaction.toString());
 
@@ -104,3 +105,16 @@ class Wallet {
     Chain.instance.addBlock(transaction, this.publicKey, signature);
   }
 }
+
+
+// Example usage
+const danburck = new Wallet();
+const jordan = new Wallet();
+const euge = new Wallet();
+
+danburck.sendMoney(50, jordan.publicKey);
+jordan.sendMoney(10, euge.publicKey);
+euge.sendMoney(10, danburck.publicKey);
+
+console.log(Chain.instance)
+
