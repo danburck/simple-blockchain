@@ -15,6 +15,9 @@ class Transaction {
 
 // Container for multiple Transactions, with link to previous block
 class Block {
+
+
+
   constructor(
     public prevHash: string,
     public transaction: Transaction,
@@ -44,8 +47,15 @@ class Chain {
   }
 
   addBlock(transaction: Transaction, senderPublicKey: string, signature: string) {
-    const newBlock = new Block(this.lastBlock.hash, transaction);
-    this.chain.push(newBlock);
+    const verifier = crypto.createVerify('SHA256');
+    verifier.update(transaction.toString());
+
+    const isValid = verifier.verify(senderPublicKey, signature);
+
+    if (isValid) {
+      const newBlock = new Block(this.lastBlock.hash, transaction);
+      this.chain.push(newBlock);
+    }
   }
 }
 
