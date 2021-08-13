@@ -4,9 +4,8 @@
 
 ## Usage
 
-Start the blockchain with
-
 ```bash
+# Start the BLockchain
 $ npm run start
 ```
 
