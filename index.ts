@@ -16,7 +16,7 @@ class Transaction {
 // Container for multiple Transactions, with link to previous block
 class Block {
 
-
+  public nonce = Math.round(Math.random() * 999999999);
 
   constructor(
     public prevHash: string,
@@ -44,6 +44,25 @@ class Chain {
 
   get lastBlock() {
     return this.chain[this.chain.length - 1];
+  }
+
+  mine(nonce: number) {
+    let solution = 1;
+    console.log('⛏ mining...')
+
+    while(true) {
+      const hash = crypto.createHash('MD5');
+      hash.update((nonce + solution).toString()).end();
+
+      const attempt = hash.digest('hex');
+
+      if(attempt.substr(0,4) === '0000'){
+        console.log(`Solved: ${solution}`);
+        return solution;
+      }
+
+      solution += 1;
+    }
   }
 
   addBlock(transaction: Transaction, senderPublicKey: string, signature: string) {
@@ -84,7 +103,4 @@ class Wallet {
     const signature = sign.sign(this.privateKey);
     Chain.instance.addBlock(transaction, this.publicKey, signature);
   }
-
-
-
 }
